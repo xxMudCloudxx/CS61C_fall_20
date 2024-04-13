@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 /* Only change any of these 4 values */
-#define V0 0
-#define V1 -1
-#define V2 0
-#define V3 0
+#define V0 3
+#define V1 0
+#define V2 1
+#define V3 3
 
 int main(void) {
     int a;
@@ -12,7 +12,7 @@ int main(void) {
 
     /* This is a print statement. Notice the little 'f' at the end!
      * It might be worthwhile to look up how printf works for your future
-     * debugging needs... */
+     * debugging needs... */https://inst.eecs.berkeley.edu/~cs61c/fa20/
     printf("Berkeley eccentrics:\n====================\n");
 
     /* for loop */
