@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "bit_ops.h": "c",
+        "stdio.h": "c",
+        "lfsr.h": "c"
+    }
+}
