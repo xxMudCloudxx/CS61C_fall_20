@@ -26,6 +26,10 @@ Color *evaluateOnePixel(Image *image, int row, int col)
 		return NULL;
 	}
 	Color* color = (Color *) malloc(sizeof(Color));
+	if (color == NULL) {
+		perror("Allocate memory for color ERROR!\n");
+		exit(EXIT_FAILURE);
+	}
 	uint8_t B_color = image ->image[row][col].B;
 	if (B_color % 2 == 1) {
 		color ->R = 255;
@@ -50,6 +54,10 @@ Image *steganography(Image *image) {
 	// Allocate the memory of image and colors list;
 	Image* image_new = (Image *) malloc(sizeof(Image));
 	Color **colors = (Color **) malloc(rows * sizeof(Color *));
+	if (colors == NULL) {
+		perror("Allocate memory for color ERROR!\n");
+		exit(EXIT_FAILURE);
+	}
 	for (int i = 0; i < cols; i++) {
 		colors[i] = (Color *) malloc(cols * sizeof(Color));
 	}

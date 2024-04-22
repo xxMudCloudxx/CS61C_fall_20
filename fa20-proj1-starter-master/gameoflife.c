@@ -75,6 +75,10 @@ Image *life(Image *image, uint32_t rule)
 	// Allocate the memory of image and colors list;
 	Image* image_new = (Image *) malloc(sizeof(Image));
 	Color **colors = (Color **) malloc(rows * sizeof(Color *));
+	if (colors == NULL) {
+		perror("Allocate memory for color ERROR!\n");
+		exit(EXIT_FAILURE);
+	}
 	for (int i = 0; i < cols; i++) {
 		colors[i] = (Color *) malloc(cols * sizeof(Color));
 	}
