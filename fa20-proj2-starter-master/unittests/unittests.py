@@ -51,6 +51,14 @@ class TestRelu(TestCase):
         # generate the `assembly/TestRelu_test_simple.s` file and run it through venus
         t.execute()
 
+    def test_empty_matrix(self):
+        t = AssemblyTest(self, "relu.s")
+        array0 = t.array([])
+        t.input_array("a0", array0)
+        t.input_scalar("a1", len(array0))
+        t.call("relu")
+        t.execute(code = 78)
+
     @classmethod
     def tearDownClass(cls):
         print_coverage("relu.s", verbose=False)
@@ -259,8 +267,9 @@ class TestWriteMatrix(TestCase):
         # load output file name into a0 register
         t.input_write_filename("a0", outfile)
         # load input array and other arguments
-        raise NotImplementedError("TODO")
-        # TODO
+        t.input_array("a1", t.array([1, 2, 3, 4, 5, 6, 7, 8, 9]))
+        t.input_scalar("a2", 3)
+        t.input_scalar("a3", 3)
         # call `write_matrix` function
         t.call("write_matrix")
         # generate assembly and run it through venus
@@ -268,6 +277,14 @@ class TestWriteMatrix(TestCase):
         # compare the output file against the reference
         t.check_file_output(outfile, "outputs/test_write_matrix/reference.bin")
 
+    def test_fopen_exception(self):
+        self.do_write_matrix(fail='fopen', code=93)
+
+    def test_fwrite_exception(self):
+        self.do_write_matrix(fail='fwrite', code=94)
+
+    def test_fclose_exception(self):
+        self.do_write_matrix(fail='fclose', code=95)
     def test_simple(self):
         self.do_write_matrix()
 
@@ -300,9 +317,9 @@ class TestClassify(TestCase):
         t.execute(args=args)
 
         # compare the output file and
-        raise NotImplementedError("TODO")
-        # TODO
+        t.check_file_output(out_file, ref_file)
         # compare the classification output with `check_stdout`
+        t.check_stdout("2")
 
     @classmethod
     def tearDownClass(cls):
