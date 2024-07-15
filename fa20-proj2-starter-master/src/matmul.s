@@ -74,7 +74,7 @@ inner_loop_start:
 
     mv a0, s1
     mv a1, s2
-    mv a2, s6
+    mv a2, s7
     addi a3, x0, 1
     mv a4, s9
 
@@ -97,7 +97,7 @@ inner_loop_start:
     add t6, t2, t6              # t5 is the address of cur one
     sw a0 0(t6)
 
-inner_loop_end:
+inner_loop_end:    
     addi t5, t5, 1
     blt t5, s9, inner_loop_start
 

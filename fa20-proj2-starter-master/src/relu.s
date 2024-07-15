@@ -44,7 +44,7 @@ loop_continue:
 
 greater_than_zero:
     addi t2, t2, 1             # update the counter
-    bge t1, t2, loop_continue
+    blt t2, t1, loop_continue
 
 loop_end:
     lw t0, 0(sp)

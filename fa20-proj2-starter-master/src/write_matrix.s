@@ -49,7 +49,7 @@ write_matrix:
 
     # Open file and get filename descriptor
     mv a1, s0                       # a1 is filepath
-    li a2, 0                        # a2 is permissions
+    li a2, 1                        # a2 is permissions
     jal fopen
     li t0, -1
     beq a0, t0, Exceptions_open_93

@@ -152,6 +152,124 @@ class TestDot(TestCase):
         # check the return value
         t.execute(code = 76)
 
+    def test_dot_standard(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", len(arr0))
+        t.input_scalar("a3", 1)
+        t.input_scalar("a4", 1)
+        # call the `dot` function
+        t.call("dot")
+        # check the return value
+        t.check_scalar("a0", 285)
+        t.execute()
+
+    def test_dot_stride(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", 3)
+        t.input_scalar("a3", 1)
+        t.input_scalar("a4", 2)
+        # call the `dot` function
+        t.call("dot")
+        # check the return value
+        t.check_scalar("a0", 22)
+        t.execute()
+
+    def test_dot_length_1(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([9])
+        arr1 = t.array([1])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", 1)
+        t.input_scalar("a3", 1)
+        t.input_scalar("a4", 1)
+        # call the `dot` function
+        t.call("dot")
+        # check the return value
+        t.check_scalar("a0", 9)
+        t.execute()
+
+    def test_dot_stride_error1(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", 3)
+        t.input_scalar("a3", 0)
+        t.input_scalar("a4", 2)
+        # call the `dot` function
+        t.call("dot")
+        t.execute(code=76)
+
+    def test_dot_stride_error2(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", 3)
+        t.input_scalar("a3", 2)
+        t.input_scalar("a4", 0)
+        # call the `dot` function
+        t.call("dot")
+        t.execute(code=76)
+
+    def test_dot_length_error(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", 0)
+        t.input_scalar("a3", 2)
+        t.input_scalar("a4", 1)
+        # call the `dot` function
+        t.call("dot")
+        t.execute(code=75)
+
+    def test_dot_length_error2(self):
+        t = AssemblyTest(self, "dot.s")
+        # create arrays in the data section
+        arr0 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        arr1 = t.array([1, 2, 3, 4, 5, 6, 7, 8, 9])
+        # load array addresses into argument registers
+        t.input_array("a0", arr0)
+        t.input_array("a1", arr1)
+        # load array attributes into argument registers
+        t.input_scalar("a2", -1)
+        t.input_scalar("a3", 2)
+        t.input_scalar("a4", 1)
+        # call the `dot` function
+        t.call("dot")
+        t.execute(code=75)
+
     @classmethod
     def tearDownClass(cls):
         print_coverage("dot.s", verbose=False)
@@ -206,6 +324,125 @@ class TestMatmul(TestCase):
     def test_exceptions_74(self):
         self.do_matmul([1], 1, 1, [2, 3], 2, 1, [2], 74)
         
+    def test_matmul_square(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [30, 36, 42, 66, 81, 96, 102, 126, 150],
+        )
+
+    def test_matmul_nonsquare_1(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            2,
+            5,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            5,
+            2,
+            [95, 110, 220, 260],
+        )
+
+    def test_matmul_nonsquare_2(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            5,
+            2,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            2,
+            5,
+            [13, 16, 19, 22, 25, 27, 34, 41, 48, 55, 41, 52, 63, 74, 85, 55, 70, 85, 100, 115, 69, 88, 107, 126, 145],
+        )
+
+    def test_matmul_length_1(self):
+        self.do_matmul([4], 1, 1, [5], 1, 1, [20])
+
+    def test_matmul_zero_dim_m0(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            0,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=72,
+        )
+
+    def test_matmul_negative_dim_m0_y(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            -1,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=72,
+        )
+
+    def test_matmul_negative_dim_m0_x(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            -1,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=72,
+        )
+
+    def test_matmul_zero_dim_m1(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            0,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=73,
+        )
+
+    def test_matmul_negative_dim_m1_y(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            -1,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=73,
+        )
+
+    def test_matmul_negative_dim_m1_x(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            -1,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=73,
+        )
+
+    def test_matmul_unmatched_dims(self):
+        self.do_matmul(
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            2,
+            [1, 2, 3, 4, 5, 6, 7, 8, 9],
+            3,
+            3,
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],  # result does not matter
+            code=74,
+        )
 
     @classmethod
     def tearDownClass(cls):

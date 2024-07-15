@@ -42,7 +42,6 @@ classify:
     sw s10, 60(sp)
     sw s11, 64(sp)
 
-
     # Check correct number of command line args
     li t0, 5
     bne t0, a0, Exceptions_incorrect_input_89
@@ -177,14 +176,14 @@ classify:
 
     # 2. NONLINEAR LAYER: ReLU(m0 * input)
     mv a0, s2
-    lw t0, 0(s5)
-    lw t1, 4(s9)
+    lw t0, 0(s5)                        # t0 is the rows of m0
+    lw t1, 4(s9)                        # t1 is the columns of input
     mul a1, t0, t1
     jal relu
 
     # 3. LINEAR LAYER:    m1 * ReLU(m0 * input)
-    lw t0, 4(s7)
-    lw t1, 4(s9)
+    lw t0, 0(s7)                        # t0 is the columns of m1
+    lw t1, 4(s9)                        # t1 is the columns of input
     mul a0, t0, t1
     slli a0, a0, 2      
 
@@ -195,8 +194,8 @@ classify:
 
     # m1's pointer, rows and columns
     mv a0, s8      
-    lw a1, 0(s7)
-    lw a2, 4(s7)
+    lw a1, 0(s7)                        # a1 is the rows of m1
+    lw a2, 4(s7)                        # a2 is the columns of m1
 
     # ReLU(m0 * input)'s pointer, rows and columns
     mv a3, s2
@@ -226,7 +225,14 @@ classify:
     lw a3, 4(s9)
 
     jal write_matrix
-
+    # Arguments:
+    #   a0 (char*) is the pointer to string representing the filename
+    #   a1 (int*)  is the pointer to the start of the matrix in memory
+    #   a2 (int)   is the number of rows in the matrix
+    #   a3 (int)   is the number of columns in the matrix
+    # Returns:
+    #   None
+    
     # =====================================
     # CALCULATE CLASSIFICATION/LABEL
     # =====================================
@@ -251,11 +257,7 @@ classify:
 
 no_print:
     # Free the space
-    mv a0, s2
-    jal free
 
-    mv a0, s4
-    jal free
 
     mv a0, s5
     jal free

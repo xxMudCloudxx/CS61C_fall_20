@@ -12,10 +12,11 @@
 # While it just exits right after, it could always call classify again.
 main:
     # initialize register a2 to zero
-    mv a2, zero
+    mv a2, x0
 
     # call classify function
     jal classify
 
+    li a0, 0
     # exit program normally
     jal exit
